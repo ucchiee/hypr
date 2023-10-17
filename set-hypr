@@ -79,23 +79,14 @@ If you are worried about entering your password then you may want to review the 
 
 sleep 3
 
-#### Check for yay ####
-ISYAY=/sbin/yay
-if [ -f "$ISYAY" ]; then 
-    echo -e "$COK - yay was located, moving on."
+#### Check for paru ####
+ISPARU=/usr/bin/paru
+if [ -f "$ISPARU" ]; then 
+    echo -e "$COK - paru was located, moving on."
 else 
-    echo -e "$CWR - Yay was NOT located"
-    read -n1 -rep $'[\e[1;33mACTION\e[0m] - Would you like to install yay (y,n) ' INSTYAY
-    if [[ $INSTYAY == "Y" || $INSTYAY == "y" ]]; then
-        git clone https://aur.archlinux.org/yay.git &>> $INSTLOG
-        cd yay
-        makepkg -si --noconfirm &>> ../$INSTLOG
-        cd ..
-        
-    else
-        echo -e "$CER - Yay is required for this script, now exiting"
-        exit
-    fi
+    echo -e "$CWR - paru was NOT located"
+    echo -e "$CER - paru is required for this script, now exiting"
+    exit
 fi
 
 ### Disable wifi powersave mode ###
@@ -114,27 +105,17 @@ fi
 ### Install all of the above pacakges ####
 read -n1 -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the packages? (y,n) ' INST
 if [[ $INST == "Y" || $INST == "y" ]]; then
-    # update the DB first
-    echo -e "$COK - Updating yay database..."
-    yay -Suy --noconfirm &>> $INSTLOG
-    
-    #setup the waybar with a fix - thankyou @Mrt
-    #echo -e "$CNT - Installing Waybar with fix"
-    #yay -S --noconfirm gcc12 &>> $INSTLOG
-    #export CC=gcc-12 CXX=g++-12
-    #yay -S --noconfirm waybar-hyprland &>> $INSTLOG
-
     #Stage 1
     echo -e "\n$CNT - Stage 1 - Installing main components, this may take a while..."
     for SOFTWR in hyprland kitty waybar swww swaylock-effects wofi wlogout mako xdg-desktop-portal-hyprland swappy grim slurp thunar
     do
         #First lets see if the package is there
-        if yay -Qs $SOFTWR > /dev/null ; then
+        if paru -Qs $SOFTWR > /dev/null ; then
             echo -e "$COK - $SOFTWR is already installed."
         else
             echo -e "$CNT - Now installing $SOFTWR ..."
-            yay -S --noconfirm $SOFTWR &>> $INSTLOG
-            if yay -Qs $SOFTWR > /dev/null ; then
+            paru -S --noconfirm $SOFTWR &>> $INSTLOG
+            if paru -Qs $SOFTWR > /dev/null ; then
                 echo -e "$COK - $SOFTWR was installed."
             else
                 echo -e "$CER - $SOFTWR install had failed, please check the install.log"
@@ -148,12 +129,12 @@ if [[ $INST == "Y" || $INST == "y" ]]; then
     for SOFTWR in polkit-gnome python-requests pamixer pavucontrol brightnessctl bluez bluez-utils blueman network-manager-applet gvfs thunar-archive-plugin file-roller btop pacman-contrib
     do
         #First lets see if the package is there
-        if yay -Qs $SOFTWR > /dev/null ; then
+        if paru -Qs $SOFTWR > /dev/null ; then
             echo -e "$COK - $SOFTWR is already installed."
         else
             echo -e "$CNT - Now installing $SOFTWR ..."
-            yay -S --noconfirm $SOFTWR &>> $INSTLOG
-            if yay -Qs $SOFTWR > /dev/null ; then
+            paru -S --noconfirm $SOFTWR &>> $INSTLOG
+            if paru -Qs $SOFTWR > /dev/null ; then
                 echo -e "$COK - $SOFTWR was installed."
             else
                 echo -e "$CER - $SOFTWR install had failed, please check the install.log"
@@ -167,12 +148,12 @@ if [[ $INST == "Y" || $INST == "y" ]]; then
     for SOFTWR in starship ttf-jetbrains-mono-nerd noto-fonts-emoji lxappearance xfce4-settings sddm-git qt5-svg qt5-quickcontrols2 qt5-graphicaleffects
     do
         #First lets see if the package is there
-        if yay -Qs $SOFTWR > /dev/null ; then
+        if paru -Qs $SOFTWR > /dev/null ; then
             echo -e "$COK - $SOFTWR is already installed."
         else
             echo -e "$CNT - Now installing $SOFTWR ..."
-            yay -S --noconfirm $SOFTWR &>> $INSTLOG
-            if yay -Qs $SOFTWR > /dev/null ; then
+            paru -S --noconfirm $SOFTWR &>> $INSTLOG
+            if paru -Qs $SOFTWR > /dev/null ; then
                 echo -e "$COK - $SOFTWR was installed."
             else
                 echo -e "$CER - $SOFTWR install had failed, please check the install.log"
@@ -193,7 +174,7 @@ if [[ $INST == "Y" || $INST == "y" ]]; then
     
     # Clean out other portals
     echo -e "$CNT - Cleaning out conflicting xdg portals..."
-    yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
+    paru -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 fi
 
 ### Copy Config Files ###
